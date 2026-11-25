@@ -49,6 +49,13 @@ python -m yizhan web --port 8767
 # http://127.0.0.1:8767
 ```
 
+Run in Docker (the container uses the default port 8000):
+
+```bash
+docker build -t yizhan .
+docker run -p 8000:8000 yizhan
+```
+
 ## Command reference
 
 | Command | What it does |
@@ -64,6 +71,46 @@ python -m yizhan web --port 8767
 | `stats` / `web` | Stats / web UI |
 
 Global switches `--mock`, `--json`, `--model`, `--base-url`, `--api-key`, `--db` work before or after the subcommand.
+
+## 🤔 Why not just ask a general LLM
+
+A general model translates more smoothly than most tools. Yizhan adds the three things it cannot:
+
+1. **Numbers and terms are not lost** — after translation, the output is checked locally: are the numbers, dates and model numbers all present, and are glossary terms translated as agreed? A miss sends it back for another pass, at most twice. The classic chat-model error is turning "3 working days" into "several days" with no visible sign.
+2. **The glossary decides** — how a term is translated in your industry comes from the local glossary, applied in both directions, so one manual never ends up with three names for the same part.
+3. **Documents and glossary stay local** — source, translation and glossary sit on this machine, so contracts and product docs are not uploaded; a model call sends only the current passage.
+4. **Offline covers part of it** — with no key it applies glossary substitutions and splits long sentences into pending segments, stating clearly that this version is not a finished translation.
+
+## 🎯 Use cases
+
+- **Product docs both ways**: manuals and help-centre articles with the glossary fixed first, then numbers and model numbers checked so "charge for 2 hours" never becomes "charge for a while".
+- **Bilingual contracts**: one wrong number or date is expensive; the glossary pins down "force majeure" and "penalty".
+- **Paper abstracts**: one abstract in several languages with consistent terminology, so reviewers do not trip over shifting names.
+
+## 🗺 Roadmap
+
+- **Translation memory**: reuse the previous translation when a sentence repeats, keeping the document consistent.
+- **Glossary conflict detection**: fail early when a term has two translations, instead of discovering it after the fact.
+- **Bilingual export**: source and translation paragraph by paragraph for proofreading.
+- **Glossary import/export**: CSV so a team can share one list.
+- **Segment complexity hints**: after splitting, flag sentences whose structure warrants a human read.
+
+## ❓ FAQ
+
+**Where do I get an API key?**
+The project ships without one. It talks to DeepSeek (`https://api.deepseek.com`) by default — set `LLM_API_KEY`. Any OpenAI-compatible endpoint works.
+
+**Where is data stored, and is it uploaded?**
+Source, translation and glossary are in local SQLite; a model call sends the current passage plus relevant glossary terms, not the whole document.
+
+**Does it work without a key?**
+It applies glossary substitutions and splits sentences, but produces no finished translation, and says so rather than passing off a half-product.
+
+**How do I switch models?**
+Change `LLM_BASE_URL`, `LLM_MODEL` and `LLM_API_KEY`, or override with `--model`.
+
+**Why was my translation sent back?**
+A number or a glossary term did not match. The number of retries and the failing item are in the output, so you see which check failed rather than a bare "failed".
 
 ## How it works
 
