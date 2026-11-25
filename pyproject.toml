@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "yizhan"
+version = "0.1.0"
+description = "多语言互译、术语表维护、译文润色"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+
+[project.scripts]
+yizhan = "yizhan.cli:main"
+
+[tool.setuptools]
+packages = ["yizhan"]
+
+[tool.ruff]
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I"]
