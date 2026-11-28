@@ -12,7 +12,7 @@ from .db import Database
 
 PAGE = """<!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>译站 · 翻译助手</title>
+<title>译站 · 术语译对了吗</title>
 <style>
 :root{--bg:#f5f7f8;--card:#fff;--ink:#1f2529;--dim:#6b7680;--accent:#2f6f7d;--line:#dde5e8}
 *{box-sizing:border-box}
@@ -33,11 +33,74 @@ button:disabled{opacity:.55;cursor:wait}
 .row{display:flex;gap:10px}.row>*{flex:1}
 .list div{padding:7px 0;border-bottom:1px dashed var(--line);font-size:14px}
 a{color:var(--accent);cursor:pointer}
+
+:root{--maxw:980px;--bg:#f4eddf;--card:#fffdf8;--ink:#28213a;--text:#28213a;--dim:#71697f;--line:#d9ccb9;--accent:#5c3d78;--muted:#71697f}
+.wrap{max-width:980px}
+body{background:#f4eddf;color:#28213a;font-family:"Songti SC","SimSun",Georgia,serif}
+h1{color:#28213a}
+header{max-width:980px;margin:0 auto}
+input,textarea,select{background:#fff;color:#28213a;border-color:#d9ccb9;border-radius:2px}
+button:not(.ghost):not(.tab){background:#5c3d78;color:#fff;border-radius:2px}
+button.ghost{background:transparent!important;color:#5c3d78!important;border:1px solid #d9ccb9!important}
+h2,h3{color:#5c3d78}
+pre{background:#fafaf6;color:#28213a;border-color:#d9ccb9}
+.item,.card{border-color:#d9ccb9;background:#fffdf8}
+.k,.empty,.hint{color:#71697f}
+
+h1{font-size:clamp(31px,5vw,39px);line-height:1.26}
+.prod{display:block;font-size:11px;line-height:1.4;letter-spacing:.18em;font-weight:650;margin-bottom:8px;opacity:.72}
+.lede,.sub{max-width:62ch;line-height:1.75}
+.route{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;margin:16px auto 20px;border:1px solid var(--line);background:var(--line);max-width:var(--maxw)}
+.route span{padding:11px 13px;background:var(--card);font-size:12px;line-height:1.5}
+.route b{display:block;font-size:10px;letter-spacing:.1em;margin-bottom:3px;opacity:.66}
+button{min-height:46px}
+input,select{min-height:44px}
+pre{white-space:pre-wrap}
+@media(max-width:680px){
+  .wrap{padding:20px 16px 56px}
+  .route{grid-template-columns:1fr}
+  h1{font-size:30px!important}
+  .row>div{min-width:100%!important}
+  button{width:100%}
+}
+
+h1{font-size:38px;color:#28213a}
+.sub{color:#71697f;font-family:"PingFang SC","Microsoft YaHei",sans-serif;font-size:14px}
+.tabs{margin:16px 0}
+.tab{border:1px solid #d9ccb9;border-radius:0;background:#fffdf8;color:#71697f;padding:9px 16px}
+.tab.on{background:#5c3d78;color:#fff;border-color:#5c3d78}
+.card{background:#fffdf8;border:1px solid #d9ccb9;border-left:5px solid #5c3d78;border-radius:0;box-shadow:none}
+button{background:#5c3d78;border-radius:0;letter-spacing:.05em}
+button:hover{background:#4a3062}
+input,textarea,select{background:#fffef9;border-color:#d3c5b1;border-radius:0;font-family:"PingFang SC","Microsoft YaHei",sans-serif}
+input:focus,textarea:focus,select:focus{border-color:#5c3d78;box-shadow:0 0 0 2px #e3d9e9}
+.out{background:#fbf7ef;border-color:#d9ccb9;color:#28213a;border-radius:0}
+h2{color:#5c3d78}
+
+
+/* mobile-32 */
+
+@media(max-width:760px){
+  main{grid-template-columns:1fr!important}
+  aside{border-right:0!important;border-bottom:1px solid #d9ccb9;width:auto!important}
+  section{padding:16px!important}
+  .row{flex-wrap:wrap!important}
+  .row>div{min-width:100%!important}
+  h1{font-size:30px!important}
+  .route{grid-template-columns:1fr!important}
+  button{min-height:48px}
+  pre{overflow-x:auto}
+}
+
+/* mobile-height */
+@media(max-width:760px){main{min-height:auto!important}aside{min-height:0!important}}
 </style></head><body><div class="wrap">
-<h1>译站 <span id="st" class="badge"></span></h1>
-<p class="sub">原文与术语都留在本机,只有你需要翻译的文本会发给你配置的模型。</p>
+<h1><span class="prod">译站</span>这一段，术语译对了吗 <span id="st" class="badge"></span></h1>
+<p class="sub">给反复翻产品帮助文档的小团队：按段对齐，锁定项目词表、数字、链接和变量；改一次术语，先看受影响的段落，再决定同步。</p>
 <div class="tabs"><div class="tab on" data-t="tr">翻译</div><div class="tab" data-t="term">术语表</div></div>
 
+
+  <div class="route" aria-label="任务步骤"><span><b>01</b>贴原文分段</span><span><b>02</b>锁词表与变量</span><span><b>03</b>导出双语稿</span></div>
 <div class="card" id="p-tr">
   <div class="row"><div><label>源语言</label><select id="src"><option value="zh">中文</option><option value="en">英文</option><option value="ja">日文</option></select></div>
   <div><label>目标语言</label><select id="dst"><option value="en">英文</option><option value="zh">中文</option><option value="ja">日文</option></select></div></div>
